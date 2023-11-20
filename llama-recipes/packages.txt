@@ -206,3 +206,5 @@ yarl
 huggingface_hub
 langchain
 fire
+tensorboard
+wandb
