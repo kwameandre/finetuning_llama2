@@ -1,0 +1,195 @@
+You are adding a <class 'transformers.integrations.integration_utils.WandbCallback'> to the callbacks of this Trainer, but there is already one. The currentlist of callbacks is
+:DefaultFlowCallback
+WandbCallback
+`use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+/home/kwamea/.conda/envs/llms_env/lib/python3.10/site-packages/torch/utils/checkpoint.py:429: UserWarning: torch.utils.checkpoint: please pass in use_reentrant=True or use_reentrant=False explicitly. The default value of use_reentrant will be updated to be False in the future. To maintain current behavior, pass use_reentrant=True. It is recommended that you use use_reentrant=False. Refer to docs for more details on the differences between the two variants.
+  warnings.warn(
+/home/kwamea/.conda/envs/llms_env/lib/python3.10/site-packages/bitsandbytes/autograd/_functions.py:322: UserWarning: MatMul8bitLt: inputs will be cast from torch.float32 to float16 during quantization
+  warnings.warn(f"MatMul8bitLt: inputs will be cast from {A.dtype} to float16 during quantization")
+/home/kwamea/.conda/envs/llms_env/lib/python3.10/site-packages/bitsandbytes/autograd/_functions.py:322: UserWarning: MatMul8bitLt: inputs will be cast from torch.bfloat16 to float16 during quantization
+  warnings.warn(f"MatMul8bitLt: inputs will be cast from {A.dtype} to float16 during quantization")
+/home/kwamea/.conda/envs/llms_env/lib/python3.10/site-packages/torch/utils/checkpoint.py:429: UserWarning: torch.utils.checkpoint: please pass in use_reentrant=True or use_reentrant=False explicitly. The default value of use_reentrant will be updated to be False in the future. To maintain current behavior, pass use_reentrant=True. It is recommended that you use use_reentrant=False. Refer to docs for more details on the differences between the two variants.
+  warnings.warn(
+/home/kwamea/.conda/envs/llms_env/lib/python3.10/site-packages/bitsandbytes/autograd/_functions.py:322: UserWarning: MatMul8bitLt: inputs will be cast from torch.float32 to float16 during quantization
+  warnings.warn(f"MatMul8bitLt: inputs will be cast from {A.dtype} to float16 during quantization")
+/home/kwamea/.conda/envs/llms_env/lib/python3.10/site-packages/bitsandbytes/autograd/_functions.py:322: UserWarning: MatMul8bitLt: inputs will be cast from torch.bfloat16 to float16 during quantization
+  warnings.warn(f"MatMul8bitLt: inputs will be cast from {A.dtype} to float16 during quantization")
+/home/kwamea/.conda/envs/llms_env/lib/python3.10/site-packages/torch/utils/checkpoint.py:429: UserWarning: torch.utils.checkpoint: please pass in use_reentrant=True or use_reentrant=False explicitly. The default value of use_reentrant will be updated to be False in the future. To maintain current behavior, pass use_reentrant=True. It is recommended that you use use_reentrant=False. Refer to docs for more details on the differences between the two variants.
+  warnings.warn(
+/home/kwamea/.conda/envs/llms_env/lib/python3.10/site-packages/bitsandbytes/autograd/_functions.py:322: UserWarning: MatMul8bitLt: inputs will be cast from torch.float32 to float16 during quantization
+  warnings.warn(f"MatMul8bitLt: inputs will be cast from {A.dtype} to float16 during quantization")
+/home/kwamea/.conda/envs/llms_env/lib/python3.10/site-packages/bitsandbytes/autograd/_functions.py:322: UserWarning: MatMul8bitLt: inputs will be cast from torch.bfloat16 to float16 during quantization
+  warnings.warn(f"MatMul8bitLt: inputs will be cast from {A.dtype} to float16 during quantization")
+/home/kwamea/.conda/envs/llms_env/lib/python3.10/site-packages/torch/utils/checkpoint.py:429: UserWarning: torch.utils.checkpoint: please pass in use_reentrant=True or use_reentrant=False explicitly. The default value of use_reentrant will be updated to be False in the future. To maintain current behavior, pass use_reentrant=True. It is recommended that you use use_reentrant=False. Refer to docs for more details on the differences between the two variants.
+  warnings.warn(
+/home/kwamea/.conda/envs/llms_env/lib/python3.10/site-packages/bitsandbytes/autograd/_functions.py:322: UserWarning: MatMul8bitLt: inputs will be cast from torch.float32 to float16 during quantization
+  warnings.warn(f"MatMul8bitLt: inputs will be cast from {A.dtype} to float16 during quantization")
+/home/kwamea/.conda/envs/llms_env/lib/python3.10/site-packages/bitsandbytes/autograd/_functions.py:322: UserWarning: MatMul8bitLt: inputs will be cast from torch.bfloat16 to float16 during quantization
+  warnings.warn(f"MatMul8bitLt: inputs will be cast from {A.dtype} to float16 during quantization")
+No such comm: fe6f0c9a838743399bbbec37177a5864
+No such comm: 5b5cf6824b3e47969519e02b04a754e6
+No such comm: e033ceda6bb04e98880b6a4cb2085938
+No such comm: d6a99770948f45f2b4006176fe2a0236
+No such comm: 783a9438c4154aa797067fe149bf6f4a
+No such comm: cd63887a15514a21b9c006f6a24457a1
+Summarize this dialog:
+A: Hi Tom, are you busy tomorrow’s afternoon?
+B: I’m pretty sure I am. What’s up?
+A: Can you go with me to the animal shelter?.
+B: What do you want to do?
+A: I want to get a puppy for my son.
+B: That will make him so happy.
+A: Yeah, we’ve discussed it many times. I think he’s ready now.
+B: That’s good. Raising a dog is a tough issue. Like having a baby ;-)
+A: I'll get him one of those little dogs.
+B: One that won't grow up too big;-)
+A: And eat too much;-))
+B: Do you know which one he would like?
+A: Oh, yes, I took him there last Monday. He showed me one that he really liked.
+B: I bet you had to drag him away.
+A: He wanted to take it home right away ;-).
+B: I wonder what he'll name it.
+A: He said he’d name it after his dead hamster – Lemmy  - he's  a great Motorhead fan :-)))
+---
+Summary:
+A: Hi Tom, are you busy tomorrow’s afternoon?
+B: I’m pretty sure I am. What’s up?
+A: Can you go with me to the animal shelter?.
+B: What do you want to do?
+A: I want to get a puppy for my son.
+B: That will make him so happy.
+A: Yeah, we’ve discussed it many times. I think he’s ready now.
+B
+Generated Output:
+Summarize this dialogue:
+Alyssa: Have you seen Fergie’s national anthem? Illuminati does a great job.
+Derek: This is not normal. I saw it last week…
+Alyssa: What do you think about it?
+Derek: I can fart bright stripes and bright stars better then she sings.
+Alyssa: The best part is that she acts like she nailed it. But at least it's funny in a good way.
+Derek: It is 😂
+---
+Summary:
+Generated Output:
+Summarize this dialogue:
+Claire: <file_photo>
+Kim: Looks delicious...
+Linda: No way... Look what I'm cooking right now:
+Linda: <file_photo>
+Claire: hahahaha
+Kim: Curry dream team
+Claire: Enjoy your dinner :*
+---
+Summary:
+---
+Generated Output:
+Summarize this dialogue:
+Anastasia: Our new school photos
+Anastasia: <file_photo>
+Anastasia: Look how happy I am
+Darrell: You don't look unhappy to me but it's like you're, uh
+Darrell: What was the word
+Darrell: Sceptical of something
+Darrell: "what am I doing here"
+Anastasia: Ahahaha
+Anastasia: That's my mood everywhere I step in
+Darrell: Hahaha
+Anastasia: Well
+Anastasia: They took the photo in less than a minute actually
+Darrell: Oh wow... well, I guess there were a lot of people?
+Anastasia: Yeah
+Anastasia: School photos always suck
+Anastasia: They take them so fast and carelessly
+Darrell: They would only really take group photos of us in middle and high school
+Darrell: If someone wanted a portrait photo, I guess it was possible
+Darrell: But not obligatory
+Anastasia: Well, I needed a new one for my school ID
+Anastasia: So I had no choice here
+Darrell: Luckily no one really has to look at your school ID most of the time, haha
+Darrell: Don't worry about it
+Anastasia: Ah no, I'm not worried, I actually find it kind of funny, it's fine
+---
+Summary:
+Anastasia: Our new school photos
+Anastasia: <file_photo>
+Anastasia: Look how happy I am
+Darrell: You don't look unhappy to me but it's like you're, uh
+Darrell: What was the word
+Darrell: Sceptical of something
+Darrell: "what am I doing here"
+Anastasia: Ahahaha
+Anastasia: That'
+Generated Output:
+Summarize this dialogue:
+Matt: have you heard that Bon Jovi are coming to Poland?
+Phil: No way!
+Phil: where, when?
+Matt: Warsaw, next July
+Tony: would you like to go?
+Matt: Sure!
+Phil: how much are the tickets? Very expensive?
+Phil: they're huge, I guess tix can cost a bomb
+Matt: I read the cheapest ones start from pln 250
+Phil: not too bad, for Bon Jovi
+Matt: Yep!
+Tony: maybe I will go too
+Tony: Would you like to get the tix soon?
+Matt: Yes
+Matt: The sooner, the better
+Tony: Right, they may be sold out pretty soon
+Matt: How about you, Phil?
+Matt: would you like to go too?
+Phil: Will think about it
+Phil: I liked them a lot when I was a kid
+Phil: It would be great to see them live
+Matt: I guess so!
+Matt: Think about it and let me know soon, ok?
+Phil: Sure
+---
+Summary:
+Matt: have you heard that Bon Jovi are coming to Poland?
+Phil: No way!
+Phil: where, when?
+Matt: Warsaw, next July
+Tony: would you like to go?
+Matt: Sure!
+Phil: how much are the tickets? Very expensive?
+Phil: they're huge, I guess tix can cost a bomb
+Matt: I
+Generated Output:
+Summarize this dialogue:
+Matt: have you heard that Bon Jovi are coming to Poland?
+Phil: No way!
+Phil: where, when?
+Matt: Warsaw, next July
+Tony: would you like to go?
+Matt: Sure!
+Phil: how much are the tickets? Very expensive?
+Phil: they're huge, I guess tix can cost a bomb
+Matt: I read the cheapest ones start from pln 250
+Phil: not too bad, for Bon Jovi
+Matt: Yep!
+Tony: maybe I will go too
+Tony: Would you like to get the tix soon?
+Matt: Yes
+Matt: The sooner, the better
+Tony: Right, they may be sold out pretty soon
+Matt: How about you, Phil?
+Matt: would you like to go too?
+Phil: Will think about it
+Phil: I liked them a lot when I was a kid
+Phil: It would be great to see them live
+Matt: I guess so!
+Matt: Think about it and let me know soon, ok?
+Phil: Sure
+---
+Summary:
+Phil: No way!
+Phil: where, when?
+Matt: Warsaw, next July
+Tony: would you like to go?
+Matt: Sure!
+Phil: how much are the tickets? Very expensive?
+Phil: they're huge, I guess tix can cost a bomb
+Matt: I read the cheapest ones start from pln 250
+Phil: not too bad, for Bon J

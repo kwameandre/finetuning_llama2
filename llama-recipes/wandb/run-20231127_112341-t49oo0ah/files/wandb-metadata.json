@@ -1,0 +1,327 @@
+{
+    "os": "Linux-4.18.0-372.32.1.el8_6.x86_64-x86_64-with-glibc2.28",
+    "python": "3.10.11",
+    "heartbeatAt": "2023-11-27T16:23:41.836219",
+    "startedAt": "2023-11-27T16:23:41.221848",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "<python with no main file>",
+    "codePathLocal": null,
+    "git": {
+        "remote": "git@github.com:kwameandre/finetuning_llama2.git",
+        "commit": "f8aa29cb00711419668eba7fcab341869f6336a1"
+    },
+    "email": null,
+    "root": "/home/kwamea/finetuning_llama2",
+    "host": "node2105.palmetto.clemson.edu",
+    "username": "kwamea",
+    "executable": "/home/kwamea/.conda/envs/llms_env/bin/python",
+    "cpu_count": 56,
+    "cpu_count_logical": 56,
+    "cpu_freq": {
+        "current": 3.9863392857142856,
+        "min": 4000.0,
+        "max": 4000.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3.535,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 3.7,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 4000.0,
+            "max": 4000.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 49.9755859375,
+            "used": 11.954753875732422
+        }
+    },
+    "gpu": "NVIDIA A100-PCIE-40GB",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA A100-PCIE-40GB",
+            "memory_total": 42949672960
+        }
+    ],
+    "memory": {
+        "total": 376.1783561706543
+    }
+}
