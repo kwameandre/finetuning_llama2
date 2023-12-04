@@ -30,6 +30,8 @@ else:
     raise FileNotFoundError(error_message)
 
 import torch
+import wandb
+from transformers.integrations import WandbCallback
 from transformers import AutoTokenizer, AutoModelForCausalLM, LlamaTokenizer, LlamaForCausalLM, GenerationConfig, pipeline, DataCollatorWithPadding, default_data_collator, Trainer, TrainingArguments
 from langchain import PromptTemplate, LLMChain
 from langchain.llms import HuggingFacePipeline
@@ -61,7 +63,7 @@ import huggingface_hub
 
 huggingface_hub.login(token = huggingface_api_key)
 tokenizer = AutoTokenizer.from_pretrained(
-        "meta-llama/Llama-2-7b-hf",
+        "mistralai/Mistral-7B-v0.1",
         cache_dir=os.path.join('/scratch', username),
         load_in_8bit=True if train_config.quantization else None,
         #token=huggingface_api_key,
@@ -75,14 +77,14 @@ tokenizer.add_special_tokens(
 )
 
 model = AutoModelForCausalLM.from_pretrained(
-        "meta-llama/Llama-2-7b-hf",
+        "mistralai/Mistral-7B-v0.1",
         load_in_8bit=True if train_config.quantization else None,
         device_map="auto" if train_config.quantization else None,
         cache_dir=os.path.join('/scratch', username),
         #token=huggingface_api_key,
         use_auth_token=True,
 )
-print("Llama 2 loaded\n")
+print("Model Loaded\n")
 
 #add testset and rename current test set to validation set 
 
@@ -203,7 +205,7 @@ def create_peft_config(model):
     update_config((train_config, fsdp_config), **kwargs)
     
     model = prepare_model_for_int8_training(model)
-    peft_config = generate_peft_config(train_config, kwargs)
+    #peft_config = generate_peft_config(train_config, kwargs)
     model = get_peft_model(model, peft_config)
     model.print_trainable_parameters()
     return model, peft_config
@@ -247,8 +249,9 @@ if enable_profiler:
     profiler_callback = ProfilerCallback(profiler)
 else:
     profiler = nullcontext()
-    
-    
+
+wandb.init(project="tmp1", name="testMistralScript")
+
 print("Training")
 torch.cuda.empty_cache()
 # Define training args
@@ -256,10 +259,10 @@ training_args = TrainingArguments(
     output_dir=output_dir,
     overwrite_output_dir=True,
     bf16=True, 
-    logging_dir=f"{output_dir}/logs",
+    #logging_dir=f"{output_dir}/logs",
     logging_strategy="steps",
     evaluation_strategy="steps",
-    logging_steps=5, 
+    logging_steps=5,
     eval_steps=5,
     save_strategy="steps",
     optim="adamw_torch_fused",
@@ -267,11 +270,14 @@ training_args = TrainingArguments(
     max_steps=total_steps if enable_profiler else -1,
     **{k:v for k,v in config.items() if k != 'lora_config'},
     remove_unused_columns=False,
+    do_eval=True,
     save_steps=10,
     save_total_limit=5,
-    load_best_model_at_end=True
+    load_best_model_at_end=True,
+    push_to_hub=False,  # Set this to False to avoid conflicts with W&B logging
+    logging_dir=wandb.run.dir,
+    report_to="wandb",
 )
-
 with profiler:
     # Create Trainer instance
     trainer = Trainer(
@@ -280,9 +286,9 @@ with profiler:
         train_dataset=train_dataset,
         eval_dataset=val_dataset,
         data_collator=default_data_collator,
-        callbacks=[profiler_callback] if enable_profiler else [],
+
+        callbacks=[profiler_callback, WandbCallback()] if enable_profiler else [WandbCallback()],
     )
-    
 # Start training
 trainer.train()
 
