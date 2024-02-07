@@ -1,3 +1,6 @@
+# Log the different steps of the codes
+# mixtral 8*7B https://huggingface.co/mistralai/Mixtral-8x7B-v0.1
+# llama 2 70b https://huggingface.co/meta-llama/Llama-2-70b
 # Set cache directory and load Huggingface api key
 import os
 
@@ -29,6 +32,8 @@ else:
                     'The API key will let you download models from Huggingface.'
     raise FileNotFoundError(error_message)
 
+print("\nImporting packages\n")
+    
 import torch
 import wandb
 from transformers.integrations import WandbCallback
@@ -61,9 +66,10 @@ from configs.datasets import samsum_dataset, alpaca_dataset, grammar_dataset
 from ft_datasets.utils import Concatenator
 import huggingface_hub
 
+print("\nLoading Model\n")
 huggingface_hub.login(token = huggingface_api_key)
 tokenizer = AutoTokenizer.from_pretrained(
-        "mistralai/Mistral-7B-v0.1",
+        "meta-llama/Llama-2-7b-hf",
         cache_dir=os.path.join('/scratch', username),
         load_in_8bit=True if train_config.quantization else None,
         #token=huggingface_api_key,
@@ -77,7 +83,7 @@ tokenizer.add_special_tokens(
 )
 
 model = AutoModelForCausalLM.from_pretrained(
-        "mistralai/Mistral-7B-v0.1",
+        "meta-llama/Llama-2-7b-hf",
         load_in_8bit=True if train_config.quantization else None,
         device_map="auto" if train_config.quantization else None,
         cache_dir=os.path.join('/scratch', username),
@@ -88,6 +94,7 @@ print("Model Loaded\n")
 
 #add testset and rename current test set to validation set 
 
+print("Loading dataset\n")
 #edit file path to your unique dataset
 dataset = load_dataset('csv', data_files='samsum-data/samsum-train.csv',split = 'train')
 valset = load_dataset('csv', data_files='samsum-data/samsum-validation.csv',split = 'train')
@@ -172,7 +179,7 @@ model.eval()
 with torch.no_grad():
     print(tokenizer.decode(model.generate(**model_input, max_new_tokens=100)[0], skip_special_tokens=True))
 
-print("Reducing parameters")
+print("Reducing parameters\n")
 #reduces the parameters needed to train
 model.train()
 def create_peft_config(model):
@@ -211,6 +218,7 @@ def create_peft_config(model):
     return model, peft_config
 
 # create peft config
+print("Setting up LORA\n")
 model, lora_config = create_peft_config(model)
 
 torch.cuda.empty_cache()
@@ -250,7 +258,7 @@ if enable_profiler:
 else:
     profiler = nullcontext()
 
-wandb.init(project="tmp1", name="testMistralScript")
+wandb.init(project="tmp1", name="testingPyScript")
 
 print("Training")
 torch.cuda.empty_cache()
@@ -291,8 +299,9 @@ with profiler:
     )
 # Start training
 trainer.train()
+print("Training Complete\n")
 
-print("Saving model")
+print("Saving model\n")
 #saves the model
 model.save_pretrained(output_dir)
 
@@ -313,3 +322,26 @@ def lora_config_serializer(obj):
 # Write the dictionary to the JSON file using the custom serializer
 with open(json_file_path, "w") as json_file:
     json.dump(peft_config, json_file, default=lora_config_serializer, indent=4)
+
+print("Model saved\n")
+    
+#load model to huggingface hub
+print("Loading model to huggingface hub")
+from transformers.tokenization_utils_base import PreTrainedTokenizerBase
+from pathlib import Path
+#https://huggingface.co/docs/hub/repositories-getting-started
+api = HfApi()
+
+repo_id = "andrk9/testingPyScript"
+
+try:
+    create_repo(repo_id)
+except RepositoryExistsError:
+    # If the repository already exists, catch the exception and update the repository
+    print(f"Repository '{repo_id}' already exists. Updating...")
+
+api.upload_folder(
+    folder_path=output_dir,
+    repo_id=repo_id,
+    repo_type="model",
+)
