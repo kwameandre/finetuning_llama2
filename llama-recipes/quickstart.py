@@ -1,6 +1,4 @@
-# Log the different steps of the codes
-# mixtral 8*7B https://huggingface.co/mistralai/Mixtral-8x7B-v0.1
-# llama 2 70b https://huggingface.co/meta-llama/Llama-2-70b
+# command line args 
 # Set cache directory and load Huggingface api key
 import os
 
@@ -96,9 +94,54 @@ print("Model Loaded\n")
 
 print("Loading dataset\n")
 #edit file path to your unique dataset
+'''
 dataset = load_dataset('csv', data_files='samsum-data/samsum-train.csv',split = 'train')
 valset = load_dataset('csv', data_files='samsum-data/samsum-validation.csv',split = 'train')
 testset = load_dataset('csv', data_files='samsum-data/samsum-test.csv',split = 'train')
+
+'''
+import argparse
+from datasets import load_dataset
+"""
+def main(load_data):
+    if load_data.lower() == "yes":
+        dataset = load_dataset('csv', data_files='samsum-data/samsum-train.csv', split='train')
+        valset = load_dataset('csv', data_files='samsum-data/samsum-validation.csv', split='train')
+        testset = load_dataset('csv', data_files='samsum-data/samsum-test.csv', split='train')
+
+    else:
+        # Load the dataset from a CSV file
+        full_dataset = load_dataset('csv', data_files='combined_info.csv')
+
+        # Get the number of examples in the dataset
+        num_examples = len(full_dataset["train"])
+
+        # Define the split ratios
+        train_ratio = 0.8
+        validation_ratio = 0.1
+        test_ratio = 0.1
+
+        # Calculate the number of examples for each split
+        num_train_examples = int(num_examples * train_ratio)
+        num_validation_examples = int(num_examples * validation_ratio)
+        num_test_examples = int(num_examples * test_ratio)
+
+        # Split the dataset
+        splits = full_dataset["train"].train_test_split(
+            test_size=num_test_examples,
+            train_size=num_train_examples,
+            shuffle=True
+        )
+
+        # Assign the splits to variables
+        dataset = splits["train"]
+        valset = splits["test"]
+
+        # If you want a separate test split, you can use the test split from the original split
+        testset = full_dataset["train"].train_test_split(
+            test_size=num_test_examples,
+            train_size=num_train_examples
+        )["test"]
 
 #Edit the prompt to tell the model what to do including the variables from prompt.format
 prompt = (
@@ -146,6 +189,108 @@ test_dataset = test.map(
     batched=True,
     remove_columns=list(test.features), 
 ).map(Concatenator(), batched=True)
+"""
+from datasets import load_dataset
+
+# Global variables
+load = None
+
+
+def main(load_data):
+    global load
+    load = load_data.lower()
+    
+if load == "yes":
+    dataset = load_dataset('csv', data_files='samsum-data/samsum-train.csv', split='train')
+    valset = load_dataset('csv', data_files='samsum-data/samsum-validation.csv', split='train')
+    testset = load_dataset('csv', data_files='samsum-data/samsum-test.csv', split='train')
+
+else:
+    # Load the dataset from a CSV file
+    full_dataset = load_dataset('csv', data_files='combined_info.csv')
+
+    # Get the number of examples in the dataset
+    num_examples = len(full_dataset["train"])
+
+    # Define the split ratios
+    train_ratio = 0.8
+    validation_ratio = 0.1
+    test_ratio = 0.1
+
+    # Calculate the number of examples for each split
+    num_train_examples = int(num_examples * train_ratio)
+    num_validation_examples = int(num_examples * validation_ratio)
+    num_test_examples = int(num_examples * test_ratio)
+
+    # Split the dataset
+    splits = full_dataset["train"].train_test_split(
+        test_size=num_test_examples,
+        train_size=num_train_examples,
+        shuffle=True
+    )
+
+    # Assign the splits to global variables
+    dataset = splits["train"]
+    valset = splits["test"]
+
+    # If you want a separate test split, you can use the test split from the original split
+    testset = full_dataset["train"].train_test_split(
+        test_size=num_test_examples,
+        train_size=num_train_examples
+    )["test"]
+
+# Execute main function
+#main("yes")  # You can change "yes" to "no" if you want to load the data differently
+
+# Edit the prompt to tell the model what to do including the variables from prompt.format
+prompt = (
+    f"Generate labels that best fit the following text with respect topic of :\n{{text}}\n---\nLabel:{{label}}\nLabels:\n"
+)
+
+#prompt for testing
+test_prompt = (
+    f"Tell me which labels best fit the following text:\n{{text}}\n---\nLabel:\n"
+)
+
+#edit the variables in prompt.format to match your data: essentially what you what the model to read
+def apply_prompt_template(sample):
+    return {
+        "text": prompt.format(
+            text = sample["text"],
+            label = sample["label"],
+        )
+    }
+
+#Only include what you want the model to see during testing
+def apply_prompt_template_TEST(sample):
+    return {
+        "text": test_prompt.format(
+            text = sample["text"],
+        )
+    }
+
+# Data processing
+data = dataset.map(apply_prompt_template, remove_columns=list(dataset.features))
+val = valset.map(apply_prompt_template, remove_columns=list(valset.features))
+test = testset.map(apply_prompt_template_TEST, remove_columns=list(testset.features))
+
+# Tokenization
+train_dataset = data.map(
+    lambda sample: tokenizer(sample["text"]),
+    batched=True,
+    remove_columns=list(data.features),
+).map(Concatenator(), batched=True)
+val_dataset = val.map(
+    lambda sample: tokenizer(sample["text"]),
+    batched=True,
+    remove_columns=list(val.features),
+).map(Concatenator(), batched=True)
+test_dataset = test.map(
+    lambda sample: tokenizer(sample["text"]),
+    batched=True,
+    remove_columns=list(test.features),
+).map(Concatenator(), batched=True)
+
 print("Dataset Loaded\n")
 
 #Edit eval_prompt to match your data
@@ -258,9 +403,21 @@ if enable_profiler:
 else:
     profiler = nullcontext()
 
-wandb.init(project="tmp1", name="testingPyScript")
+print("LORA Completed\n")
 
-print("Training")
+wb = None
+
+
+def main(wab):
+    global wb
+    wb = wab.lower()
+
+if wb == yes:
+    print("Creating weights and biases project\n")
+    wandb.init(project="tmp1", name="testingPyScript")
+    print("Project created\n")
+
+print("Starting training\n")
 torch.cuda.empty_cache()
 # Define training args
 training_args = TrainingArguments(
@@ -345,3 +502,11 @@ api.upload_folder(
     repo_id=repo_id,
     repo_type="model",
 )
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Process command line arguments.')
+    parser.add_argument('--loadData', choices=['yes', 'no'], required=True, help='Whether to input test splits (yes/no)')
+    parser.add_argument('--wab', choices=['yes', 'no'], required=True, help='Load data to weights and biases')
+    args = parser.parse_args()
+
+    main(args.loadData)
