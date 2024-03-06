@@ -35,7 +35,7 @@ print("\nImporting packages\n")
 import torch
 import wandb
 from transformers.integrations import WandbCallback
-from transformers import AutoTokenizer, AutoModelForCausalLM, LlamaTokenizer, LlamaForCausalLM, GenerationConfig, pipeline, DataCollatorWithPadding, default_data_collator, Trainer, TrainingArguments
+from transformers import AutoTokenizer, AutoModelForCausalLM, LlamaTokenizer, LlamaForCausalLM, GenerationConfig, pipeline, DataCollatorWithPadding, default_data_collator, Trainer, TrainingArguments, BitsAndBytesConfig, EarlyStoppingCallback
 from langchain import PromptTemplate, LLMChain
 from langchain.llms import HuggingFacePipeline
 from configs import fsdp_config, train_config
@@ -67,7 +67,7 @@ import huggingface_hub
 print("\nLoading Model\n")
 huggingface_hub.login(token = huggingface_api_key)
 tokenizer = AutoTokenizer.from_pretrained(
-        "meta-llama/Llama-2-7b-hf",
+        "meta-llama/Llama-2-70b-hf",
         cache_dir=os.path.join('/scratch', username),
         load_in_8bit=True if train_config.quantization else None,
         #token=huggingface_api_key,
@@ -81,126 +81,32 @@ tokenizer.add_special_tokens(
 )
 
 model = AutoModelForCausalLM.from_pretrained(
-        "meta-llama/Llama-2-7b-hf",
-        load_in_8bit=True if train_config.quantization else None,
-        device_map="auto" if train_config.quantization else None,
-        cache_dir=os.path.join('/scratch', username),
-        #token=huggingface_api_key,
-        use_auth_token=True,
+    "meta-llama/Llama-2-70b-hf",
+    resume_download=True,
+    quantization_config=BitsAndBytesConfig(
+        float16_bits=8,  # Adjust as needed
+        float32_bits=32,  # Adjust as needed
+    ),
+    device_map="auto" if train_config.quantization else None,
+    cache_dir=os.path.join('/scratch', username),
+    trust_remote_code=True,
+    token=huggingface_api_key,
 )
 print("Model Loaded\n")
 
-#add testset and rename current test set to validation set 
-
 print("Loading dataset\n")
-#edit file path to your unique dataset
-'''
-dataset = load_dataset('csv', data_files='samsum-data/samsum-train.csv',split = 'train')
-valset = load_dataset('csv', data_files='samsum-data/samsum-validation.csv',split = 'train')
-testset = load_dataset('csv', data_files='samsum-data/samsum-test.csv',split = 'train')
-
-'''
 import argparse
-from datasets import load_dataset
-"""
-def main(load_data):
-    if load_data.lower() == "yes":
-        dataset = load_dataset('csv', data_files='samsum-data/samsum-train.csv', split='train')
-        valset = load_dataset('csv', data_files='samsum-data/samsum-validation.csv', split='train')
-        testset = load_dataset('csv', data_files='samsum-data/samsum-test.csv', split='train')
-
-    else:
-        # Load the dataset from a CSV file
-        full_dataset = load_dataset('csv', data_files='combined_info.csv')
-
-        # Get the number of examples in the dataset
-        num_examples = len(full_dataset["train"])
-
-        # Define the split ratios
-        train_ratio = 0.8
-        validation_ratio = 0.1
-        test_ratio = 0.1
-
-        # Calculate the number of examples for each split
-        num_train_examples = int(num_examples * train_ratio)
-        num_validation_examples = int(num_examples * validation_ratio)
-        num_test_examples = int(num_examples * test_ratio)
-
-        # Split the dataset
-        splits = full_dataset["train"].train_test_split(
-            test_size=num_test_examples,
-            train_size=num_train_examples,
-            shuffle=True
-        )
-
-        # Assign the splits to variables
-        dataset = splits["train"]
-        valset = splits["test"]
-
-        # If you want a separate test split, you can use the test split from the original split
-        testset = full_dataset["train"].train_test_split(
-            test_size=num_test_examples,
-            train_size=num_train_examples
-        )["test"]
-
-#Edit the prompt to tell the model what to do including the variables from prompt.format
-prompt = (
-    f"Summarize this dialogue:\n{{dialog}}\n---\nSummary:{{summary}}\n"
-)
-
-#prompt for testing
-test_prompt = (
-    f"Summarize this dialogue:\n{{dialog}}\n---\nSummary:\n"
-)
-
-#edit the variables in prompt.format to match your data: essentially what you what the model to read
-def apply_prompt_template(sample):
-    return {
-        "text": prompt.format(
-            dialog = sample["dialogue"],
-            summary = sample["summary"],
-        )
-    }
-
-#Only include what you want the model to see during testing
-def apply_prompt_template_TEST(sample):
-    return {
-        "text": test_prompt.format(
-            dialog = sample["dialogue"],
-        )
-    }
-
-data = dataset.map(apply_prompt_template, remove_columns=list(dataset.features))
-val = valset.map(apply_prompt_template, remove_columns=list(valset.features))
-test = testset.map(apply_prompt_template_TEST, remove_columns=list(testset.features))
-
-train_dataset = data.map(
-    lambda sample: tokenizer(sample["text"]),
-    batched=True,
-    remove_columns=list(data.features), 
-).map(Concatenator(), batched=True)
-val_dataset = val.map(
-    lambda sample: tokenizer(sample["text"]),
-    batched=True,
-    remove_columns=list(val.features), 
-).map(Concatenator(), batched=True)
-test_dataset = test.map(
-    lambda sample: tokenizer(sample["text"]),
-    batched=True,
-    remove_columns=list(test.features), 
-).map(Concatenator(), batched=True)
-"""
 from datasets import load_dataset
 
 # Global variables
 load = None
 
-
-def main(load_data):
+def main(load_data, wab):
     global load
     load = load_data.lower()
     
 if load == "yes":
+    #edit file path to your unique dataset
     dataset = load_dataset('csv', data_files='samsum-data/samsum-train.csv', split='train')
     valset = load_dataset('csv', data_files='samsum-data/samsum-validation.csv', split='train')
     testset = load_dataset('csv', data_files='samsum-data/samsum-test.csv', split='train')
@@ -338,7 +244,7 @@ def create_peft_config(model):
     peft_config = LoraConfig(
         task_type=TaskType.CAUSAL_LM,
         inference_mode=False,
-        r=8,
+        r=8, #lower if run into issues
         lora_alpha=32,
         lora_dropout=0.05,
         bias= "none",
@@ -350,14 +256,14 @@ def create_peft_config(model):
         'peft_method': 'lora', 
         'quantization': True, 
         'use_fp16': True, 
-        'model_name': os.path.join('/scratch', username, 'models--meta-llama--Llama-2-7b-hf/snapshots/6fdf2e60f86ff2481f2241aaee459f85b5b0bbb9'), 
+        #edit when changing the model
+        'model_name': os.path.join('/scratch', username, 'models--meta-llama--Llama-2-70b-hf/snapshots/90052941a64de02075ca800b09fcea1bdaacb939'), 
         'output_dir': os.path.join('/scratch', username)
     }
     
     update_config((train_config, fsdp_config), **kwargs)
     
     model = prepare_model_for_int8_training(model)
-    #peft_config = generate_peft_config(train_config, kwargs)
     model = get_peft_model(model, peft_config)
     model.print_trainable_parameters()
     return model, peft_config
@@ -374,8 +280,8 @@ enable_profiler = False
 config = {
     'lora_config': lora_config,
     'learning_rate': 1e-4,
-    'num_train_epochs': 2,
-    'gradient_accumulation_steps': 2,
+    'num_train_epochs': 10,
+    'gradient_accumulation_steps': 4,
     'per_device_train_batch_size': 2,
     'gradient_checkpointing': False,
 }
@@ -405,25 +311,20 @@ else:
 
 print("LORA Completed\n")
 
-wb = None
+#create a weights and biases account and input the api key in below
+#change the names of the project
+print("Creating weights and biases project\n")
+wandb.init(project="tmp1", name="testingPyScript")
+print("Project created\n")
 
+from transformers.integrations import WandbCallback
 
-def main(wab):
-    global wb
-    wb = wab.lower()
-
-if wb == yes:
-    print("Creating weights and biases project\n")
-    wandb.init(project="tmp1", name="testingPyScript")
-    print("Project created\n")
-
-print("Starting training\n")
 torch.cuda.empty_cache()
 # Define training args
 training_args = TrainingArguments(
     output_dir=output_dir,
     overwrite_output_dir=True,
-    bf16=True, 
+    bf16 = True,
     #logging_dir=f"{output_dir}/logs",
     logging_strategy="steps",
     evaluation_strategy="steps",
@@ -452,9 +353,10 @@ with profiler:
         eval_dataset=val_dataset,
         data_collator=default_data_collator,
 
-        callbacks=[profiler_callback, WandbCallback()] if enable_profiler else [WandbCallback()],
+        callbacks=[EarlyStoppingCallback(early_stopping_patience=3), profiler_callback, WandbCallback()] if enable_profiler else [WandbCallback()],
     )
 # Start training
+print("Starting training\n")
 trainer.train()
 print("Training Complete\n")
 
