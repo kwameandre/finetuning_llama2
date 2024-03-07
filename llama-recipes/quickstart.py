@@ -63,6 +63,7 @@ import json
 from configs.datasets import samsum_dataset, alpaca_dataset, grammar_dataset
 from ft_datasets.utils import Concatenator
 import huggingface_hub
+from huggingface_hub import notebook_login, Repository, HfApi, create_repo, delete_repo
 
 print("\nLoading Model\n")
 huggingface_hub.login(token = huggingface_api_key)
@@ -352,7 +353,7 @@ with profiler:
         train_dataset=train_dataset,
         eval_dataset=val_dataset,
         data_collator=default_data_collator,
-
+        #TODO early stopping pat. 
         callbacks=[EarlyStoppingCallback(early_stopping_patience=3), profiler_callback, WandbCallback()] if enable_profiler else [WandbCallback()],
     )
 # Start training
@@ -383,7 +384,7 @@ with open(json_file_path, "w") as json_file:
     json.dump(peft_config, json_file, default=lora_config_serializer, indent=4)
 
 print("Model saved\n")
-    
+  
 #load model to huggingface hub
 print("Loading model to huggingface hub")
 from transformers.tokenization_utils_base import PreTrainedTokenizerBase
@@ -408,7 +409,7 @@ api.upload_folder(
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process command line arguments.')
     parser.add_argument('--loadData', choices=['yes', 'no'], required=True, help='Whether to input test splits (yes/no)')
-    parser.add_argument('--wab', choices=['yes', 'no'], required=True, help='Load data to weights and biases')
+    #parser.add_argument('--wab', choices=['yes', 'no'], required=True, help='Load data to weights and biases')
     args = parser.parse_args()
 
     main(args.loadData)
