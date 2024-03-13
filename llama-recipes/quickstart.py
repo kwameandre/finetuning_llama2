@@ -71,7 +71,6 @@ tokenizer = AutoTokenizer.from_pretrained(
         "meta-llama/Llama-2-70b-hf",
         cache_dir=os.path.join('/scratch', username),
         load_in_8bit=True if train_config.quantization else None,
-        #token=huggingface_api_key,
         use_auth_token=True,
 )
 
@@ -91,7 +90,7 @@ model = AutoModelForCausalLM.from_pretrained(
     device_map="auto" if train_config.quantization else None,
     cache_dir=os.path.join('/scratch', username),
     trust_remote_code=True,
-    token=huggingface_api_key,
+    use_auth_token=True,
 )
 print("Model Loaded\n")
 
@@ -102,7 +101,7 @@ from datasets import load_dataset
 # Global variables
 load = None
 
-def main(load_data, wab):
+def main(load_data):
     global load
     load = load_data.lower()
     
@@ -281,7 +280,7 @@ enable_profiler = False
 config = {
     'lora_config': lora_config,
     'learning_rate': 1e-4,
-    'num_train_epochs': 10,
+    'num_train_epochs': 20,
     'gradient_accumulation_steps': 4,
     'per_device_train_batch_size': 2,
     'gradient_checkpointing': False,
@@ -394,6 +393,7 @@ api = HfApi()
 
 repo_id = "andrk9/testingPyScript"
 
+'''
 try:
     create_repo(repo_id)
 except RepositoryExistsError:
@@ -405,6 +405,7 @@ api.upload_folder(
     repo_id=repo_id,
     repo_type="model",
 )
+'''
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process command line arguments.')
