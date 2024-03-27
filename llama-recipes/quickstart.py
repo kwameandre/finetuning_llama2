@@ -352,7 +352,6 @@ with profiler:
         train_dataset=train_dataset,
         eval_dataset=val_dataset,
         data_collator=default_data_collator,
-        #TODO early stopping pat. 
         callbacks=[EarlyStoppingCallback(early_stopping_patience=3), profiler_callback, WandbCallback()] if enable_profiler else [WandbCallback()],
     )
 # Start training
