@@ -113,7 +113,7 @@ if load == "yes":
 
 else:
     # Load the dataset from a CSV file
-    full_dataset = load_dataset('csv', data_files='combined_info.csv')
+    full_dataset = load_dataset('csv', data_files='test_all.csv')
 
     # Get the number of examples in the dataset
     num_examples = len(full_dataset["train"])
@@ -150,7 +150,7 @@ else:
 
 # Edit the prompt to tell the model what to do including the variables from prompt.format
 prompt = (
-    f"Generate labels that best fit the following text with respect topic of :\n{{text}}\n---\nLabel:{{label}}\nLabels:\n"
+    f"Generate labels that best fit following text with respect to the topic at the end of the text after the colon of :\n{{text}}\n---\nLabel:{{label}}\nLabels:\n"
 )
 
 #prompt for testing
@@ -174,7 +174,6 @@ def apply_prompt_template_TEST(sample):
             text = sample["text"],
         )
     }
-
 # Data processing
 data = dataset.map(apply_prompt_template, remove_columns=list(dataset.features))
 val = valset.map(apply_prompt_template, remove_columns=list(valset.features))
@@ -280,7 +279,7 @@ enable_profiler = False
 config = {
     'lora_config': lora_config,
     'learning_rate': 1e-4,
-    'num_train_epochs': 20,
+    'num_train_epochs': 50,
     'gradient_accumulation_steps': 4,
     'per_device_train_batch_size': 2,
     'gradient_checkpointing': False,
@@ -314,7 +313,7 @@ print("LORA Completed\n")
 #create a weights and biases account and input the api key in below
 #change the names of the project
 print("Creating weights and biases project\n")
-wandb.init(project="tmp1", name="testingPyScript")
+wandb.init(project="PIRS", name="PIRSData")
 print("Project created\n")
 
 from transformers.integrations import WandbCallback
@@ -390,9 +389,9 @@ from pathlib import Path
 #https://huggingface.co/docs/hub/repositories-getting-started
 api = HfApi()
 
-repo_id = "andrk9/testingPyScript"
+repo_id = "andrk9/PIRSData"
 
-'''
+
 try:
     create_repo(repo_id)
 except RepositoryExistsError:
@@ -404,7 +403,7 @@ api.upload_folder(
     repo_id=repo_id,
     repo_type="model",
 )
-'''
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process command line arguments.')
