@@ -95,23 +95,25 @@ finetuned_model = PeftModelForCausalLM.from_pretrained(plain_model, output_dir)
 #prompt for plain model
 eval_prompt = " "
 
-while(eval_prompt.lower() != "q" or eval_prompt.lower() != "quit"):
+while(True):
     eval_prompt = input("Enter a sample prompt, enter q or quit to stop: ")
     # Process the user input
     # For example, you can print the input or perform further processing as needed
-
+    if eval_prompt.lower() == "q" or eval_prompt.lower() == "quit":
+        break
+    
     model_input = tokenizer(eval_prompt, return_tensors="pt").to("cuda")
 
-    print("Plain model output\n")
+    print("\n\nPlain model output\n\n")
 
     plain_model.eval()
     with torch.no_grad():
-        print(tokenizer.decode(model.generate(**model_input, max_new_tokens=100)[0], skip_special_tokens=True))
+        print(tokenizer.decode(plain_model.generate(**model_input, max_new_tokens=100)[0], skip_special_tokens=True))
 
     #loads finetuned model
 
-    printf("finetuned model output\n")
+    print("\n\nfinetuned model output\n\n")
 
     finetuned_model.eval()
     with torch.no_grad():
-        print(tokenizer.decode(model.generate(**model_input, max_new_tokens=100)[0], skip_special_tokens=True))
+        print(tokenizer.decode(finetuned_model.generate(**model_input, max_new_tokens=100)[0], skip_special_tokens=True))
